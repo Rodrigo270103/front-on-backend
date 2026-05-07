@@ -8,7 +8,6 @@ const { verificarToken, soloAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Multer — guardar el Excel temporalmente en /tmp
 const upload = multer({
   dest: path.join(__dirname, '../../tmp/'),
   fileFilter: (req, file, cb) => {
@@ -21,7 +20,19 @@ const upload = multer({
 });
 
 // ─── POST /api/importar ──────────────────────────────────────────────────────
-// Body: multipart/form-data con el campo "plantilla" (archivo .xlsx)
+// Plantilla esperada:
+//   Fila 2 col B → nombre campeonato
+//   Fila 3 col B → año
+//   Fila 4 col B → categoría
+//   Fila 5 col B → sede
+//   Fila 8 en adelante → partidos:
+//     A=nro_partido, B=ronda, C=jugador1, D=jugador2,
+//     E=bye(S/N),   F=fecha,  G=hora,    H=sede,  I=cancha
+//
+// LÓGICA DE BYES:
+//   Un BYE significa que el jugador NO jugó la ronda anterior (ej: no jugó 64avos).
+//   El partido queda con jugador1 asignado, jugador2 = NULL, estado = programado.
+//   El jugador2 se asignará automáticamente cuando su rival gane su partido anterior.
 router.post('/', verificarToken, soloAdmin, upload.single('plantilla'), (req, res) => {
   if (!req.file)
     return res.status(400).json({ error: 'No se recibió ningún archivo' });
@@ -31,43 +42,49 @@ router.post('/', verificarToken, soloAdmin, upload.single('plantilla'), (req, re
     const ws = wb.Sheets[wb.SheetNames[0]];
     const filas = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
 
-    // ── 1. Leer datos del campeonato (filas 5-8, col B = índice 1) ─────────
-    const nombre   = String(filas[4]?.[1] || '').trim();
-    const anio     = parseInt(filas[5]?.[1]) || new Date().getFullYear();
-    const categoria= String(filas[6]?.[1] || '').trim();
-    const sede     = String(filas[7]?.[1] || '').trim();
+    // ── 1. Metadatos del campeonato (filas 2-5, índices 1-4, col B = índice 1)
+    const nombre    = String(filas[1]?.[1] || '').trim();
+    const anio      = parseInt(filas[2]?.[1]) || new Date().getFullYear();
+    const categoria = String(filas[3]?.[1] || '').trim();
+    const sede      = String(filas[4]?.[1] || '').trim();
 
     if (!nombre || !categoria)
       return res.status(400).json({ error: 'El campeonato debe tener nombre y categoría' });
 
-    // ── 2. Crear campeonato ─────────────────────────────────────────────────
+    // ── 2. Crear campeonato
     const { lastID: campeonatoId } = run(
       'INSERT INTO campeonatos (nombre, anio, categoria, sede, estado) VALUES (?,?,?,?,?)',
       [nombre, anio, categoria, sede, 'en_curso']
     );
 
-    // ── 3. Leer partidos (desde fila 21, índice 20) ─────────────────────────
-    // Columnas: A=nro, B=ronda, C=jugador1, D=jugador2, E=bye, F=fecha, G=hora, H=sede, I=cancha
-    const filaInicio = 20; // índice 0-based de la fila 21
-    const partidosRaw = filas.slice(filaInicio).filter(f =>
-      f[0] && String(f[0]).trim().startsWith('P')
-    );
+    // ── 3. Leer partidos desde fila 8 (índice 7)
+    const RONDAS_VALIDAS = new Set([
+      '64avos','32avos','16avos','octavos','cuartos','semifinal','final'
+    ]);
+
+    const filaInicio = 7;
+    const partidosRaw = filas.slice(filaInicio).filter(f => {
+      const nro   = String(f[0] || '').trim();
+      const ronda = String(f[1] || '').trim().toLowerCase();
+      return nro && RONDAS_VALIDAS.has(ronda);
+    });
 
     if (!partidosRaw.length)
-      return res.status(400).json({ error: 'No se encontraron partidos en la plantilla' });
+      return res.status(400).json({
+        error: 'No se encontraron partidos válidos. Verifique que la columna RONDA tenga: 64avos, 32avos, 16avos, octavos, cuartos, semifinal o final.'
+      });
 
-    // ── 4. Extraer jugadores únicos y crearlos ──────────────────────────────
+    // ── 4. Extraer jugadores únicos y crearlos
     const nombresUnicos = new Set();
     for (const f of partidosRaw) {
-      const j1 = String(f[2] || '').trim();
-      const j2 = String(f[3] || '').trim();
+      const j1  = String(f[2] || '').trim();
+      const j2  = String(f[3] || '').trim();
       const bye = String(f[4] || '').trim().toUpperCase();
       if (j1) nombresUnicos.add(j1);
       if (j2 && bye !== 'S') nombresUnicos.add(j2);
     }
 
-    // Crear jugadores que no existen aún
-    const mapaJugadores = {}; // nombre → id
+    const mapaJugadores = {};
     for (const nombre of nombresUnicos) {
       const existe = query('SELECT id FROM jugadores WHERE nombre_completo = ?', [nombre]);
       if (existe.length) {
@@ -81,16 +98,10 @@ router.post('/', verificarToken, soloAdmin, upload.single('plantilla'), (req, re
       }
     }
 
-    // ── 5. Crear partidos y bracket ─────────────────────────────────────────
-    // Mapeo de rondas → orden numérico para calcular posición en bracket
-    const ordenRondas = {
-      '64avos': 1, '32avos': 2, '16avos': 3,
-      'octavos': 4, 'cuartos': 5, 'semifinal': 6, 'final': 7
-    };
-
-    // Contador de posición por ronda
+    // ── 5. Crear partidos y bracket
+    // BYE = el jugador ya tiene su lugar en esta ronda, esperando al rival
+    // Su partido queda programado con jugador1 asignado y jugador2 = NULL
     const contadorPosicion = {};
-
     const resumen = { campeonato_id: campeonatoId, jugadores: nombresUnicos.size, partidos: 0, byes: 0 };
 
     for (const f of partidosRaw) {
@@ -105,27 +116,23 @@ router.post('/', verificarToken, soloAdmin, upload.single('plantilla'), (req, re
       const cancha      = String(f[8] || '').trim();
 
       const jugador1_id = mapaJugadores[j1Nombre] || null;
+      // Si es BYE: jugador2 = NULL (llegará cuando su rival gane en la ronda anterior)
       const jugador2_id = (!es_bye && j2Nombre) ? (mapaJugadores[j2Nombre] || null) : null;
 
-      // Posición en el bracket
       if (!contadorPosicion[ronda]) contadorPosicion[ronda] = 0;
       contadorPosicion[ronda]++;
       const posicion = contadorPosicion[ronda];
 
-      // Si es BYE: el partido queda finalizado y el jugador1 es el ganador automático
-      const estadoPartido = es_bye ? 'finalizado' : 'programado';
-      const ganador_id    = es_bye ? jugador1_id : null;
-
+      // BYE: el partido queda programado, jugador1 ya está, jugador2 llega después
       const { lastID: partidoId } = run(
         `INSERT INTO partidos
          (campeonato_id, nro_partido, ronda, jugador1_id, jugador2_id,
           es_bye, fecha, hora, sede, cancha, estado, ganador_id)
          VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
         [campeonatoId, nro_partido, ronda, jugador1_id, jugador2_id,
-         es_bye, fecha, hora, sedePart, cancha, estadoPartido, ganador_id]
+         es_bye, fecha, hora, sedePart, cancha, 'programado', null]
       );
 
-      // Registrar en bracket
       run(
         'INSERT INTO bracket (campeonato_id, ronda, posicion, partido_id) VALUES (?,?,?,?)',
         [campeonatoId, ronda, posicion, partidoId]
@@ -135,52 +142,6 @@ router.post('/', verificarToken, soloAdmin, upload.single('plantilla'), (req, re
       if (es_bye) resumen.byes++;
     }
 
-    // ── 6. Avanzar BYEs automáticamente ────────────────────────────────────
-    // Los jugadores con BYE ya tienen ganador_id, hay que colocarlos en la siguiente ronda
-    const byePartidos = query(
-      `SELECT * FROM partidos WHERE campeonato_id=? AND es_bye=1`, [campeonatoId]
-    );
-
-    for (const bp of byePartidos) {
-      const posActual = query(
-        'SELECT * FROM bracket WHERE partido_id=?', [bp.id]
-      );
-      if (!posActual.length) continue;
-
-      const { ronda, posicion } = posActual[0];
-      const posProxima = Math.ceil(posicion / 2);
-      const rondaSig   = _siguienteRonda(ronda);
-
-      // Buscar si ya existe partido en esa posición de la siguiente ronda
-      const proxBracket = query(
-        'SELECT * FROM bracket WHERE campeonato_id=? AND ronda=? AND posicion=?',
-        [campeonatoId, rondaSig, posProxima]
-      );
-
-      if (proxBracket.length) {
-        const proxP = query('SELECT * FROM partidos WHERE id=?', [proxBracket[0].partido_id]);
-        if (proxP.length) {
-          if (!proxP[0].jugador1_id) {
-            run('UPDATE partidos SET jugador1_id=? WHERE id=?', [bp.ganador_id, proxP[0].id]);
-          } else {
-            run('UPDATE partidos SET jugador2_id=? WHERE id=?', [bp.ganador_id, proxP[0].id]);
-          }
-        }
-      } else {
-        // Crear slot en siguiente ronda
-        const { lastID: nuevoId } = run(
-          `INSERT INTO partidos (campeonato_id, ronda, jugador1_id, estado)
-           VALUES (?,?,?,'programado')`,
-          [campeonatoId, rondaSig, bp.ganador_id]
-        );
-        run(
-          'INSERT INTO bracket (campeonato_id, ronda, posicion, partido_id) VALUES (?,?,?,?)',
-          [campeonatoId, rondaSig, posProxima, nuevoId]
-        );
-      }
-    }
-
-    // Limpiar archivo temporal
     fs.unlinkSync(req.file.path);
 
     res.status(201).json({
@@ -194,11 +155,5 @@ router.post('/', verificarToken, soloAdmin, upload.single('plantilla'), (req, re
     res.status(500).json({ error: 'Error procesando la plantilla: ' + err.message });
   }
 });
-
-function _siguienteRonda(ronda) {
-  const orden = ['64avos','32avos','16avos','octavos','cuartos','semifinal','final'];
-  const idx = orden.findIndex(r => ronda?.toLowerCase() === r);
-  return idx >= 0 && idx < orden.length - 1 ? orden[idx + 1] : 'final';
-}
 
 module.exports = router;
