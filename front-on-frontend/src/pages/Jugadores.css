@@ -1,0 +1,215 @@
+.jugadores-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.jugadores-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.jugadores-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0D3B6E;
+}
+
+.buscador {
+  padding: 10px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  width: 260px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.buscador:focus {
+  border-color: #0D3B6E;
+}
+
+.jugadores-tabla {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  background: #0D3B6E;
+  color: white;
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.15s;
+}
+
+tbody tr:hover {
+  background: #f8f9ff;
+}
+
+tbody td {
+  padding: 12px;
+  font-size: 0.9rem;
+}
+
+.jugador-nombre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #0D3B6E;
+}
+
+.sin-dato {
+  color: #bbb;
+  font-style: italic;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge-verde { background: #d4edda; color: #1e7e34; }
+.badge-gris  { background: #e9ecef; color: #555; }
+
+.btn-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.btn-icono.editar {
+  background: #e8f0fe;
+  color: #0D3B6E;
+}
+
+.btn-icono:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal-box h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0D3B6E;
+  margin-bottom: 6px;
+}
+
+.modal-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.modal-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: -6px;
+}
+
+.modal-form input,
+.modal-form select {
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal-form input:focus,
+.modal-form select:focus {
+  border-color: #0D3B6E;
+}
+
+.modal-msg {
+  padding: 10px;
+  border-radius: 8px;
+  background: #f0f8ff;
+  color: #333;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-cancelar {
+  padding: 10px 20px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.btn-guardar {
+  padding: 10px 24px;
+  background: #0D3B6E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.btn-guardar:hover:not(:disabled) {
+  background: #1a5fa8;
+}
+
+.btn-guardar:disabled {
+  opacity: 0.6;
+}
