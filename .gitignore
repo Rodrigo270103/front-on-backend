@@ -1,0 +1,26 @@
+# Dependencias
+node_modules/
+
+# Base de datos
+*.db
+*.db-shm
+*.db-wal
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Archivos temporales de Office
+~$*
+
+# Uploads temporales
+tmp/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build
+dist/
+build/
