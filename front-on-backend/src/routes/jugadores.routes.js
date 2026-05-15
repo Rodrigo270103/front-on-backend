@@ -44,9 +44,9 @@ router.get('/:id', verificarToken, (req, res) => {
 router.put('/:id', verificarToken, soloAdmin, (req, res) => {
   const { club, golpe_preferido, categoria } = req.body;
 
-  const GOLPES_VALIDOS = ['derecha', 'zurda', 'ambidiestro'];
+  const GOLPES_VALIDOS = ['Drive', 'Back', 'Grulla', 'Mistsuki', '3D'];
   if (golpe_preferido && !GOLPES_VALIDOS.includes(golpe_preferido))
-    return res.status(400).json({ error: 'Golpe preferido inválido. Use: derecha, zurda o ambidiestro' });
+    return res.status(400).json({ error: 'Golpe preferido invalido' });
 
   const jugador = query('SELECT id FROM jugadores WHERE id = ?', [req.params.id]);
   if (!jugador.length)

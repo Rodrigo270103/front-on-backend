@@ -1,0 +1,176 @@
+.br-wrapper {
+  background: #f4f6f9;
+  min-height: 100vh;
+}
+
+.br-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px 12px;
+  background: #0D3B6E;
+  color: white;
+}
+
+.br-header h1 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 0 0 2px;
+}
+
+.br-header p {
+  font-size: 0.82rem;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.br-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.br-loading,
+.br-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #aaa;
+  text-align: center;
+}
+
+/* ── Scroll horizontal del bracket ────── */
+.br-scroll-wrapper {
+  overflow-x: auto;
+  padding: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.br-tabla {
+  display: flex;
+  gap: 16px;
+  min-width: max-content;
+  align-items: flex-start;
+}
+
+/* ── Columna por ronda ─────────────────── */
+.br-columna {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.br-ronda-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0D3B6E;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 4px 8px;
+  background: #dce8f5;
+  border-radius: 20px;
+}
+
+.br-partidos-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Tarjeta de partido ────────────────── */
+.br-partido {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.br-partido.propio {
+  border-color: #0D3B6E;
+}
+
+.br-partido.en_curso {
+  border-color: #e65100;
+}
+
+.br-jugador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  gap: 6px;
+}
+
+.br-jugador.ganador {
+  background: #e8f5e9;
+}
+
+.br-nombre {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #1a1a2e;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.br-jugador.ganador .br-nombre {
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.br-jugador.yo .br-nombre {
+  color: #0D3B6E;
+  font-weight: 700;
+}
+
+.br-trophy {
+  color: #f9a825;
+  flex-shrink: 0;
+}
+
+.br-bye {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #999;
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.br-divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 0 10px;
+}
+
+.br-meta {
+  font-size: 0.72rem;
+  color: #999;
+  padding: 4px 10px 6px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.br-bottom-spacer {
+  height: 80px;
+}
+
+@media (min-width: 768px) {
+  .br-bottom-spacer { height: 24px; }
+  .br-scroll-wrapper { padding: 24px; }
+  .br-header { padding: 20px 32px 16px; }
+}

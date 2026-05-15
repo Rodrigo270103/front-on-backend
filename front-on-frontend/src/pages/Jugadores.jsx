@@ -88,6 +88,7 @@ function Jugadores() {
                 <th>Golpe Preferido</th>
                 <th>Categoría</th>
                 <th>Cuenta</th>
+                <th>Email</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -108,6 +109,9 @@ function Jugadores() {
                     <span className={`badge ${j.tiene_cuenta ? 'badge-verde' : 'badge-gris'}`}>
                       {j.tiene_cuenta ? 'Registrado' : 'Sin cuenta'}
                     </span>
+                  </td>
+                  <td className="email-cell">
+                    {j.email || <span className="sin-dato">-</span>}
                   </td>
                   <td>
                     <button
@@ -144,9 +148,11 @@ function Jugadores() {
                 onChange={e => setForm({ ...form, golpe_preferido: e.target.value })}
               >
                 <option value="">Seleccionar...</option>
-                <option value="derecha">Derecha</option>
-                <option value="zurda">Zurda</option>
-                <option value="ambidiestro">Ambidiestro</option>
+                <option value="Drive">Drive</option>
+                <option value="Back">Back</option>
+                <option value="Grulla">Grulla</option>
+                <option value="Mistsuki">Mistsuki</option>
+                <option value="3D">3D</option>
               </select>
               <label>Categoría</label>
               <input

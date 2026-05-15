@@ -1,0 +1,140 @@
+/* ── Top bar (desktop) ───────────────────────── */
+.navbar-jugador-top {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background: #0D3B6E;
+  color: white;
+  padding: 0 24px;
+  height: 64px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nj-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.nj-brand span {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.nj-brand small {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  letter-spacing: 1px;
+}
+
+.nj-links {
+  display: flex;
+  gap: 4px;
+}
+
+.nj-links button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  color: rgba(255,255,255,0.8);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nj-links button:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.nj-links button.active {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  font-weight: 600;
+}
+
+.nj-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nj-user span {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.nj-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.nj-logout:hover {
+  background: rgba(255,0,0,0.3);
+}
+
+/* ── Bottom tab bar (mobile) ───────────────────── */
+.navbar-jugador-bottom {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  z-index: 100;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+}
+
+.navbar-jugador-bottom button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 4px;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 0.65rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.navbar-jugador-bottom button.active {
+  color: #0D3B6E;
+}
+
+.navbar-jugador-bottom button.nj-logout-mobile {
+  color: #c0392b;
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (min-width: 768px) {
+  .navbar-jugador-top {
+    display: flex;
+  }
+
+  .navbar-jugador-bottom {
+    display: none;
+  }
+}

@@ -35,7 +35,7 @@ router.post('/login', (req, res) => {
   res.json({
     mensaje: 'Login exitoso',
     token,
-    usuario: { id: u.id, nombre: u.nombre, email: u.email, rol: u.rol },
+    usuario: { id: u.id, nombre: u.nombre, email: u.email, rol: u.rol, jugador_id: jugador?.id || null },
     jugador
   });
 });
@@ -59,8 +59,9 @@ router.post('/registro', (req, res) => {
   if (!jugador_id || !email || !password || !club || !golpe_preferido)
     return res.status(400).json({ error: 'Todos los campos son requeridos' });
 
-  if (!['derecha','zurda','ambidiestro'].includes(golpe_preferido))
-    return res.status(400).json({ error: 'Golpe preferido inválido' });
+  const GOLPES_VALIDOS = ['Drive','Back','Grulla','Mistsuki','3D'];
+  if (!GOLPES_VALIDOS.includes(golpe_preferido))
+    return res.status(400).json({ error: 'Golpe preferido invalido' });
 
   // Verificar que el jugador existe y no tiene cuenta aún
   const jugadores = query('SELECT * FROM jugadores WHERE id = ?', [jugador_id]);

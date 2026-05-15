@@ -89,6 +89,15 @@ tbody td {
 .badge-verde { background: #d4edda; color: #1e7e34; }
 .badge-gris  { background: #e9ecef; color: #555; }
 
+.email-cell {
+  font-size: 0.82rem;
+  color: #555;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .btn-icono {
   display: flex;
   align-items: center;

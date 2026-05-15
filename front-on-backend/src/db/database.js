@@ -84,6 +84,29 @@ async function initDB() {
     );
   `);
 
+  // Migración: eliminar CHECK constraint en golpe_preferido para admitir nuevos valores
+  const jugSchema = db.exec("SELECT sql FROM sqlite_master WHERE type='table' AND name='jugadores'");
+  const jugSql = jugSchema[0]?.values[0]?.[0] ?? '';
+  if (jugSql.toLowerCase().includes('check') && jugSql.includes('golpe_preferido')) {
+    db.run('PRAGMA foreign_keys = OFF');
+    db.run(`
+      CREATE TABLE jugadores_v2 (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre_completo TEXT NOT NULL,
+        usuario_id      INTEGER UNIQUE REFERENCES usuarios(id) ON DELETE SET NULL,
+        club            TEXT,
+        golpe_preferido TEXT,
+        categoria       TEXT
+      )
+    `);
+    db.run('INSERT INTO jugadores_v2 SELECT id, nombre_completo, usuario_id, club, golpe_preferido, categoria FROM jugadores');
+    db.run('DROP TABLE jugadores');
+    db.run('ALTER TABLE jugadores_v2 RENAME TO jugadores');
+    db.run('PRAGMA foreign_keys = ON');
+    saveDB();
+    console.log('Migracion aplicada: golpe_preferido sin restriccion CHECK');
+  }
+
   const existe = db.exec("SELECT id FROM usuarios WHERE email='admin@fronton.pe'");
   if (!existe.length || !existe[0].values.length) {
     db.run("INSERT INTO usuarios (nombre,email,password,rol) VALUES (?,?,?,?)",

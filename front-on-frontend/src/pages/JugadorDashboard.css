@@ -1,0 +1,215 @@
+.jd-wrapper {
+  background: #f4f6f9;
+  min-height: 100vh;
+}
+
+.jd-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+
+/* Hero */
+.jd-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #0D3B6E, #1a5fa8);
+  color: white;
+  border-radius: 16px;
+  padding: 24px 20px;
+  margin-bottom: 16px;
+}
+
+.jd-avatar {
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-hero h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.jd-hero p {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* Torneo */
+.jd-torneo-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  color: #0D3B6E;
+}
+
+.jd-torneo-card div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.jd-torneo-card strong {
+  font-size: 0.95rem;
+  color: #1a1a2e;
+}
+
+/* Stats */
+.jd-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.jd-stat {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.jd-stat-num {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0D3B6E;
+}
+
+.jd-stat-label {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 500;
+}
+
+/* Sección */
+.jd-section {
+  margin-bottom: 20px;
+}
+
+.jd-section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 10px;
+}
+
+/* Partido card */
+.jd-partido-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.jd-partido-card.proximo {
+  border-left: 4px solid #0D3B6E;
+}
+
+.jd-partido-vs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  color: #1a1a2e;
+}
+
+.vs {
+  background: #0D3B6E;
+  color: white;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.jd-partido-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+/* Acciones */
+.jd-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jd-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #0D3B6E;
+  color: white;
+  transition: background 0.2s;
+}
+
+.jd-btn .lucide:last-child {
+  margin-left: auto;
+}
+
+.jd-btn:hover {
+  background: #1a5fa8;
+}
+
+.jd-btn.secondary {
+  background: white;
+  color: #0D3B6E;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.jd-btn.secondary:hover {
+  background: #f0f4f9;
+}
+
+/* Estado badges */
+.estado-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.estado-badge.programado { background: #e3f2fd; color: #1565c0; }
+.estado-badge.en_curso   { background: #fff3e0; color: #e65100; }
+.estado-badge.finalizado { background: #e8f5e9; color: #2e7d32; }
+.estado-badge.activo     { background: #e8f5e9; color: #2e7d32; }
+.estado-badge.pendiente  { background: #f5f5f5; color: #666; }
+
+.jd-bottom-spacer {
+  height: 80px;
+}
+
+@media (min-width: 768px) {
+  .jd-bottom-spacer { height: 24px; }
+  .jd-container { padding: 32px 24px; }
+}
