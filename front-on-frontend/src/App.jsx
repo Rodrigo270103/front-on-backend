@@ -7,6 +7,7 @@ import JugadorDashboard from './pages/JugadorDashboard'
 import MisPartidos from './pages/MisPartidos'
 import Perfil from './pages/Perfil'
 import Bracket from './pages/Bracket'
+import Importar from './pages/Importar'
 
 function getUsuario() {
   try {
@@ -45,6 +46,9 @@ function App() {
 
       {/* Bracket: cualquier rol autenticado */}
       <Route path="/bracket" element={<PrivateRoute rol="any"><Bracket /></PrivateRoute>} />
+
+      {/* Importar: solo admin */}
+      <Route path="/importar" element={<PrivateRoute rol="admin"><Importar /></PrivateRoute>} />
     </Routes>
   )
 }

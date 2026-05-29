@@ -73,7 +73,8 @@ async function initDB() {
       sets_j2       INTEGER DEFAULT 0,
       estado        TEXT NOT NULL CHECK(estado IN ('programado','en_curso','finalizado')) DEFAULT 'programado',
       ganador_id    INTEGER REFERENCES jugadores(id),
-      created_at    TEXT DEFAULT (datetime('now'))
+      created_at    TEXT DEFAULT (datetime('now')),
+      partido_siguiente_id INTEGER
     );
     CREATE TABLE IF NOT EXISTS bracket (
       id            INTEGER PRIMARY KEY AUTOINCREMENT,

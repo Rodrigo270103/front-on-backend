@@ -113,3 +113,11 @@
 .action-btn.secondary:hover {
   background: #28a745;
 }
+
+.action-btn.importar {
+  background: #6f42c1;
+}
+
+.action-btn.importar:hover {
+  background: #5a32a3;
+}

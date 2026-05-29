@@ -104,52 +104,17 @@ router.put('/:id/resultado', verificarToken, soloAdmin, (req, res) => {
     [...setVals, sets_j1, sets_j2, ganador_id, req.params.id]
   );
 
-  // ── Avance automático del bracket ────────────────────────────────────────
-  // Busca la posición del partido actual en el bracket
-  const posActual = query('SELECT * FROM bracket WHERE partido_id = ?', [req.params.id]);
+  // Avance automatico del bracket usando partido_siguiente_id
   let proximoPartidoId = null;
 
-  if (posActual.length) {
-    const { campeonato_id, ronda, posicion } = posActual[0];
-    const rondaSig = _siguienteRonda(ronda);
-
-    if (rondaSig) {
-      // La posición en la siguiente ronda es Math.ceil(posicion / 2)
-      // Ej: posiciones 1 y 2 de 64avos → posición 1 de 32avos
-      //     posiciones 3 y 4 de 64avos → posición 2 de 32avos
-      const posProxima = Math.ceil(posicion / 2);
-
-      // Buscar si ya existe un partido en esa posición de la siguiente ronda.
-      // Esto cubre el caso BYE: el partido YA existe con jugador1 asignado,
-      // esperando al ganador de la ronda anterior como jugador2.
-      const proximoBracket = query(
-        'SELECT * FROM bracket WHERE campeonato_id=? AND ronda=? AND posicion=?',
-        [campeonato_id, rondaSig, posProxima]
-      );
-
-      if (proximoBracket.length) {
-        // El partido ya existe → asignar ganador al slot libre
-        const proxPartido = query('SELECT * FROM partidos WHERE id=?', [proximoBracket[0].partido_id]);
-        if (proxPartido.length) {
-          proximoPartidoId = proxPartido[0].id;
-          if (!proxPartido[0].jugador1_id) {
-            run('UPDATE partidos SET jugador1_id=? WHERE id=?', [ganador_id, proximoPartidoId]);
-          } else if (!proxPartido[0].jugador2_id) {
-            run('UPDATE partidos SET jugador2_id=? WHERE id=?', [ganador_id, proximoPartidoId]);
-          }
-        }
-      } else {
-        // El partido no existe aún → crearlo con el ganador como jugador1
-        const { lastID: nuevoPartidoId } = run(
-          `INSERT INTO partidos (campeonato_id, ronda, jugador1_id, estado)
-           VALUES (?, ?, ?, 'programado')`,
-          [campeonato_id, rondaSig, ganador_id]
-        );
-        run(
-          'INSERT INTO bracket (campeonato_id, ronda, posicion, partido_id) VALUES (?,?,?,?)',
-          [campeonato_id, rondaSig, posProxima, nuevoPartidoId]
-        );
-        proximoPartidoId = nuevoPartidoId;
+  if (p.partido_siguiente_id) {
+    const proxPartido = query('SELECT * FROM partidos WHERE id = ?', [p.partido_siguiente_id]);
+    if (proxPartido.length) {
+      proximoPartidoId = proxPartido[0].id;
+      if (!proxPartido[0].jugador1_id) {
+        run('UPDATE partidos SET jugador1_id = ? WHERE id = ?', [ganador_id, proximoPartidoId]);
+      } else if (!proxPartido[0].jugador2_id) {
+        run('UPDATE partidos SET jugador2_id = ? WHERE id = ?', [ganador_id, proximoPartidoId]);
       }
     }
   }
@@ -197,12 +162,5 @@ router.put('/:id/estado', verificarToken, soloAdmin, (req, res) => {
 
   res.json({ mensaje: `Estado actualizado a: ${estado}` });
 });
-
-// ─── Helper ──────────────────────────────────────────────────────────────────
-function _siguienteRonda(ronda) {
-  const orden = ['64avos','32avos','16avos','octavos','cuartos','semifinal','final'];
-  const idx = orden.findIndex(r => ronda?.toLowerCase() === r);
-  return idx >= 0 && idx < orden.length - 1 ? orden[idx + 1] : null;
-}
 
 module.exports = router;

@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { LogOut, LayoutDashboard, Users, Calendar } from 'lucide-react'
+import { LogOut, LayoutDashboard, Users, Calendar, Upload } from 'lucide-react'
 import './Navbar.css'
 
 function Navbar() {
@@ -41,6 +41,13 @@ function Navbar() {
         >
           <Users size={18} />
           Jugadores
+        </button>
+        <button
+          className={location.pathname === '/importar' ? 'active' : ''}
+          onClick={() => navigate('/importar')}
+        >
+          <Upload size={18} />
+          Importar
         </button>
       </div>
       <div className="navbar-user">

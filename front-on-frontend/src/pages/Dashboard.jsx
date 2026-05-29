@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Trophy, Users, Calendar, CheckCircle } from 'lucide-react'
+import { Trophy, Users, Calendar, CheckCircle, Upload } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 import './Dashboard.css'
@@ -95,6 +95,10 @@ function Dashboard() {
           <button onClick={() => navigate('/jugadores')} className="action-btn secondary">
             <Users size={20} />
             Gestionar Jugadores
+          </button>
+          <button onClick={() => navigate('/importar')} className="action-btn importar">
+            <Upload size={20} />
+            Importar Torneo
           </button>
         </div>
       </div>

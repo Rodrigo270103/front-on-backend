@@ -1,0 +1,198 @@
+.imp-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.imp-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─── Titulo ───────────────────────── */
+.imp-titulo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #0D3B6E;
+}
+
+.imp-titulo h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* ─── Aviso ────────────────────────── */
+.imp-aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-left: 4px solid #f9a825;
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #6d4c00;
+  font-size: 0.9rem;
+}
+
+.imp-aviso p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ─── Dropzone ─────────────────────── */
+.imp-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 2px dashed #c0d0e0;
+  border-radius: 12px;
+  padding: 32px 20px;
+  cursor: pointer;
+  color: #888;
+  transition: all 0.2s;
+  min-height: 120px;
+}
+
+.imp-dropzone:hover {
+  border-color: #0D3B6E;
+  background: #f0f5fb;
+  color: #0D3B6E;
+}
+
+.imp-dropzone.tiene-archivo {
+  border-color: #1E7E34;
+  background: #f0fbf4;
+  color: #1E7E34;
+}
+
+.imp-dropzone-texto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.imp-dropzone-texto span {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.imp-dropzone-texto small {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.imp-nombre-archivo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.imp-nombre-archivo span {
+  font-size: 0.95rem;
+  font-weight: 700;
+  word-break: break-all;
+  text-align: center;
+}
+
+.imp-nombre-archivo small {
+  font-size: 0.78rem;
+  opacity: 0.7;
+}
+
+/* ─── Mensajes ─────────────────────── */
+.imp-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fdecea;
+  border-left: 4px solid #c0392b;
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #c0392b;
+  font-size: 0.9rem;
+}
+
+.imp-exito {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #e8f5e9;
+  border-left: 4px solid #1E7E34;
+  border-radius: 10px;
+  padding: 16px;
+  color: #1E7E34;
+}
+
+.imp-exito div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.imp-exito strong {
+  font-size: 1rem;
+}
+
+.imp-exito span {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+/* ─── Boton ────────────────────────── */
+.imp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  background: #0D3B6E;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.imp-btn:hover:not(:disabled) {
+  background: #1a5fa8;
+}
+
+.imp-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ─── Spinner ──────────────────────── */
+.imp-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Responsive ───────────────────── */
+@media (min-width: 768px) {
+  .imp-container { padding: 40px 24px; }
+  .imp-card { padding: 40px 36px; }
+}
